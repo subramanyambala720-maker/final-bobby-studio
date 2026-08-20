@@ -26,4 +26,5 @@ coverage/
 # Misc
 .cache/
 .temp/
+.vite/
 *.tsbuildinfo
