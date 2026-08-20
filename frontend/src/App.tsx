@@ -65,7 +65,7 @@ function App() {
 
   if (isAdminRoute) {
     return (
-      <div className="bg-[#F8F9FB] min-h-screen">
+      <div className="bg-[#F8F9FB] min-h-screen font-sans text-black">
         <ScrollToTop />
         <Routes>
           <Route path="/admin/login" element={<AdminLoginPage />} />
@@ -81,14 +81,12 @@ function App() {
             <Route path="cms/services" element={<AdminServicesCMSPage />} />
             <Route path="cms/packages" element={<AdminPackagesCMSPage />} />
             <Route path="cms/contact" element={<AdminContactCMSPage />} />
-            <Route path="cms/testimonials" element={<Navigate to="/admin/dashboard" replace />} />
             <Route path="media" element={<AdminMediaLibraryPage />} />
-            <Route path="analytics" element={<Navigate to="/admin/dashboard" replace />} />
             <Route path="settings" element={<AdminSettingsPage />} />
             <Route path="users" element={<AdminUsersPage />} />
-            <Route path="cms/blogs" element={<Navigate to="/admin/dashboard" replace />} />
             <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
           </Route>
+          <Route path="*" element={<Navigate to="/admin/login" replace />} />
         </Routes>
       </div>
     );
@@ -117,6 +115,7 @@ function App() {
                   <Route path="/blog" element={<Navigate to="/" replace />} />
                   <Route path="/shop" element={<ShopPage />} />
                   <Route path="/book" element={<BookPage />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </AnimatePresence>
             </main>
