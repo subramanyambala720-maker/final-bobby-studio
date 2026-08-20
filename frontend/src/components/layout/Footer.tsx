@@ -27,9 +27,7 @@ const footerLinks = {
     { name: 'Engagement', path: '/services', serviceId: 'engagement' },
     { name: 'Portrait Photography', path: '/services', serviceId: 'portrait' },
     { name: 'Baby & Newborn', path: '/services', serviceId: 'baby' },
-    { name: 'Food Photography', path: '/services', serviceId: 'food' },
     { name: 'Destination Shoots', path: '/services', serviceId: 'destination' },
-    { name: 'Architecture & Interior', path: '/services', serviceId: 'architecture' },
   ],
 };
 
@@ -86,10 +84,15 @@ const Footer = () => {
                 <FiMail size={16} className="text-white" />
                 <span>subramanyambala720@gmail.com</span>
               </a>
-              <div className="flex items-start gap-3 text-[#A0A0A0] text-sm">
-                <FiMapPin size={16} className="text-white mt-0.5 flex-shrink-0" />
-                <span>42 Premium Avenue, Creative District, India — 400001</span>
-              </div>
+              <a
+                href="https://www.google.com/maps/place/Yvr+Luxury+Boys+PG/@17.3459465,78.3224294,17z/data=!3m1!4b1!4m6!3m5!1s0x3bcb950009070931:0x2223242406072e9d!8m2!3d17.3459465!4d78.3250043!16s%2Fg%2F11z911pwzd?entry=ttu&g_ep=EgoyMDI2MDcyOS4wIKXMDSoASAFQAw%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-3 text-[#A0A0A0] hover:text-white transition-colors text-sm group"
+              >
+                <FiMapPin size={16} className="text-white mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
+                <span>Bobby Studio, YVR Luxury Location (Click for Google Maps)</span>
+              </a>
             </div>
           </div>
 

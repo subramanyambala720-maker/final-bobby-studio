@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import User from '../models/User.js';
 import Service from '../models/Service.js';
 import Testimonial from '../models/Testimonial.js';
+import Booking from '../models/Booking.js';
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ const seedData = async () => {
       User.deleteMany({}),
       Service.deleteMany({}),
       Testimonial.deleteMany({}),
+      Booking.deleteMany({}),
     ]);
     console.log('Cleared existing data');
 
@@ -189,6 +191,133 @@ const seedData = async () => {
 
     const testimonials = await Testimonial.create(testimonialsData);
     console.log(`✅ ${testimonials.length} testimonials created`);
+
+    // --- Create Sample Bookings for Calendar ---
+    const sampleBookings = [
+      {
+        bookingId: 'BS-849201',
+        customerName: 'Aarav & Roshni Malhotra',
+        email: 'aarav.m@gmail.com',
+        phone: '+91 98765 12345',
+        service: 'Wedding Photography',
+        eventDate: '2026-08-15',
+        timeSlot: '10:00 AM - 08:00 PM',
+        packageChoice: 'Royal Wedding Package',
+        estimatedPrice: 150000,
+        status: 'confirmed',
+        paymentStatus: 'paid',
+        assignedPhotographer: 'Bobby (Lead Photographer)',
+        specialNotes: 'Grand Palace wedding venue. Requires drone aerial coverage & twin 4K cinematic cameras.',
+      },
+      {
+        bookingId: 'BS-849202',
+        customerName: 'Kavya Singhania',
+        email: 'kavya.s@yahoo.com',
+        phone: '+91 98112 33445',
+        service: 'Pre-Wedding Photography',
+        eventDate: '2026-08-15',
+        timeSlot: '04:00 PM - 07:00 PM',
+        packageChoice: 'Sunset Romance Package',
+        estimatedPrice: 45000,
+        status: 'pending',
+        paymentStatus: 'unpaid',
+        assignedPhotographer: 'Rahul Sharma (Senior Cinematographer)',
+        specialNotes: 'Outdoor hill station shoot with 3 outfit changes.',
+      },
+      {
+        bookingId: 'BS-849203',
+        customerName: 'Meera & Rohan Verma',
+        email: 'rohan.v@outlook.com',
+        phone: '+91 97654 88990',
+        service: 'Cinematography',
+        eventDate: '2026-08-15',
+        timeSlot: '07:00 PM - 11:00 PM',
+        packageChoice: 'Cinematic Reception Film',
+        estimatedPrice: 85000,
+        status: 'confirmed',
+        paymentStatus: 'partial',
+        assignedPhotographer: 'Karan Malhotra (Drone Specialist)',
+        specialNotes: 'Focus heavily on family speeches and first dance.',
+      },
+      {
+        bookingId: 'BS-739104',
+        customerName: 'Vikram & Diya Roy',
+        email: 'diya.roy@gmail.com',
+        phone: '+91 99887 76655',
+        service: 'Wedding Photography',
+        eventDate: '2026-08-20',
+        timeSlot: '09:00 AM - 06:00 PM',
+        packageChoice: 'Heritage Palace Special',
+        estimatedPrice: 120000,
+        status: 'confirmed',
+        paymentStatus: 'paid',
+        assignedPhotographer: 'Bobby (Lead Photographer)',
+        specialNotes: 'Traditional South Indian wedding ritual coverage.',
+      },
+      {
+        bookingId: 'BS-612905',
+        customerName: 'Siddharth Oberoi',
+        email: 'sid.oberoi@techventures.io',
+        phone: '+91 99100 22334',
+        service: 'Fashion & Portrait',
+        eventDate: '2026-08-25',
+        timeSlot: '11:00 AM - 03:00 PM',
+        packageChoice: 'Executive Branding Session',
+        estimatedPrice: 35000,
+        status: 'in-progress',
+        paymentStatus: 'paid',
+        assignedPhotographer: 'Sneha Reddy (Fashion & Portrait)',
+        specialNotes: 'Studio portrait shoot for Forbes interview feature.',
+      },
+      {
+        bookingId: 'BS-554406',
+        customerName: 'Priya & Devansh Gupta',
+        email: 'devansh.g@gmail.com',
+        phone: '+91 98777 44332',
+        service: 'Pre-Wedding Photography',
+        eventDate: '2026-09-05',
+        timeSlot: '06:00 AM - 11:00 AM',
+        packageChoice: 'Sunrise Heritage Package',
+        estimatedPrice: 50000,
+        status: 'confirmed',
+        paymentStatus: 'unpaid',
+        assignedPhotographer: 'Rahul Sharma',
+        specialNotes: 'Early morning shoot at Taj Mahal view locations.',
+      },
+      {
+        bookingId: 'BS-991107',
+        customerName: 'Ananya & Kabir Mehta',
+        email: 'ananya.m@gmail.com',
+        phone: '+91 98200 55667',
+        service: 'Wedding Photography',
+        eventDate: '2026-09-18',
+        timeSlot: '10:00 AM - 11:00 PM',
+        packageChoice: 'Full Destination Wedding',
+        estimatedPrice: 250000,
+        status: 'confirmed',
+        paymentStatus: 'paid',
+        assignedPhotographer: 'Bobby (Lead Photographer)',
+        specialNotes: '3-day destination celebration in Goa.',
+      },
+      {
+        bookingId: 'BS-332208',
+        customerName: 'Ritu Kapoor',
+        email: 'ritu.k@gmail.com',
+        phone: '+91 98999 11223',
+        service: 'Baby & Newborn Photography',
+        eventDate: '2026-10-02',
+        timeSlot: '02:00 PM - 05:00 PM',
+        packageChoice: 'First Year Memories',
+        estimatedPrice: 22000,
+        status: 'pending',
+        paymentStatus: 'unpaid',
+        assignedPhotographer: 'Sneha Reddy',
+        specialNotes: 'Gentle lighting required. Studio setup at home.',
+      },
+    ];
+
+    const bookings = await Booking.create(sampleBookings);
+    console.log(`✅ ${bookings.length} sample bookings created`);
 
     console.log('\n🎉 Seed completed successfully!\n');
     console.log('Admin credentials:');

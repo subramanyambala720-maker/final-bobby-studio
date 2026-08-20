@@ -17,6 +17,22 @@ import BlogPage from '@/pages/BlogPage';
 import ShopPage from '@/pages/ShopPage';
 import BookPage from '@/pages/BookPage';
 
+import AdminLayout from '@/components/admin/AdminLayout';
+import AdminLoginPage from '@/pages/admin/AdminLoginPage';
+import AdminDashboardPage from '@/pages/admin/AdminDashboardPage';
+import AdminBookingsPage from '@/pages/admin/AdminBookingsPage';
+import AdminHeroCMSPage from '@/pages/admin/AdminHeroCMSPage';
+import AdminAboutCMSPage from '@/pages/admin/AdminAboutCMSPage';
+import AdminPortfolioCMSPage from '@/pages/admin/AdminPortfolioCMSPage';
+import AdminServicesCMSPage from '@/pages/admin/AdminServicesCMSPage';
+import AdminPackagesCMSPage from '@/pages/admin/AdminPackagesCMSPage';
+import AdminBlogsCMSPage from '@/pages/admin/AdminBlogsCMSPage';
+import AdminMediaLibraryPage from '@/pages/admin/AdminMediaLibraryPage';
+import AdminSettingsPage from '@/pages/admin/AdminSettingsPage';
+import AdminUsersPage from '@/pages/admin/AdminUsersPage';
+import AdminContactEnquiriesPage from '@/pages/admin/AdminContactEnquiriesPage';
+import AdminContactCMSPage from '@/pages/admin/AdminContactCMSPage';
+
 // Scroll to top or target anchor on route change
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -40,11 +56,43 @@ function ScrollToTop() {
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1400);
     return () => clearTimeout(timer);
   }, []);
+
+  if (isAdminRoute) {
+    return (
+      <div className="bg-[#F8F9FB] min-h-screen">
+        <ScrollToTop />
+        <Routes>
+          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path="dashboard" element={<AdminDashboardPage />} />
+            <Route path="bookings" element={<AdminBookingsPage />} />
+            <Route path="enquiries" element={<AdminContactEnquiriesPage />} />
+            <Route path="cms/hero" element={<AdminHeroCMSPage />} />
+            <Route path="cms/about" element={<AdminAboutCMSPage />} />
+            <Route path="cms/portfolio" element={<AdminPortfolioCMSPage />} />
+            <Route path="cms/gallery" element={<AdminPortfolioCMSPage />} />
+            <Route path="cms/services" element={<AdminServicesCMSPage />} />
+            <Route path="cms/packages" element={<AdminPackagesCMSPage />} />
+            <Route path="cms/contact" element={<AdminContactCMSPage />} />
+            <Route path="cms/testimonials" element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path="media" element={<AdminMediaLibraryPage />} />
+            <Route path="analytics" element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path="settings" element={<AdminSettingsPage />} />
+            <Route path="users" element={<AdminUsersPage />} />
+            <Route path="cms/blogs" element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
+          </Route>
+        </Routes>
+      </div>
+    );
+  }
 
   return (
     <div className="noise-overlay bg-white min-h-screen">

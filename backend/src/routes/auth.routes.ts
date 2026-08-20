@@ -31,8 +31,8 @@ router.post(
       const user = await User.create({ name, email, password, phone });
 
       // Generate tokens
-      const accessToken = generateAccessToken(user._id as string);
-      const refreshToken = generateRefreshToken(user._id as string);
+      const accessToken = generateAccessToken(user._id.toString());
+      const refreshToken = generateRefreshToken(user._id.toString());
 
       // Save refresh token
       user.refreshToken = refreshToken;
@@ -100,8 +100,8 @@ router.post(
       }
 
       // Generate tokens
-      const accessToken = generateAccessToken(user._id as string);
-      const refreshToken = generateRefreshToken(user._id as string);
+      const accessToken = generateAccessToken(user._id.toString());
+      const refreshToken = generateRefreshToken(user._id.toString());
 
       // Update user
       user.refreshToken = refreshToken;

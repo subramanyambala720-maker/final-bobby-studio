@@ -11,6 +11,8 @@ import authRoutes from './routes/auth.routes.js';
 import serviceRoutes from './routes/service.routes.js';
 import testimonialRoutes from './routes/testimonial.routes.js';
 import contactRoutes from './routes/contact.routes.js';
+import bookingRoutes from './routes/booking.routes.js';
+import cmsRoutes from './routes/cms.routes.js';
 
 // Load env vars
 dotenv.config();
@@ -67,6 +69,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/bookings', bookingRoutes);
+app.use('/api/cms', cmsRoutes);
 
 // --- 404 Handler ---
 app.use((_req, res) => {

@@ -318,15 +318,72 @@ const HeroSection = () => {
    STATISTICS SECTION
    ============================================ */
 
+const defaultStatsList = [
+  { number: 15, suffix: '+', label: 'Years Experience', icon: FiCalendar },
+  { number: 5000, suffix: '+', label: 'Happy Clients', icon: FiUsers },
+  { number: 50, suffix: '+', label: 'Design Awards', icon: FiAward },
+  { number: 99, suffix: '%', label: 'Satisfaction Rate', icon: FiStar },
+];
+
 const StatsSection = () => {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.3 });
+  const [displayedStats, setDisplayedStats] = useState(() => {
+    const saved = localStorage.getItem('bobby_studio_cms_stats');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const iconsMap = [FiCalendar, FiUsers, FiAward, FiStar];
+          return parsed.map((item: any, idx: number) => ({
+            number: Number(item.number || 0),
+            suffix: item.suffix || '',
+            label: item.label || '',
+            icon: iconsMap[idx % iconsMap.length],
+          }));
+        }
+      } catch (e) {}
+    }
+    return defaultStatsList;
+  });
+
+  useEffect(() => {
+    const loadStats = () => {
+      const saved = localStorage.getItem('bobby_studio_cms_stats');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const iconsMap = [FiCalendar, FiUsers, FiAward, FiStar];
+            setDisplayedStats(
+              parsed.map((item: any, idx: number) => ({
+                number: Number(item.number || 0),
+                suffix: item.suffix || '',
+                label: item.label || '',
+                icon: iconsMap[idx % iconsMap.length],
+              }))
+            );
+          }
+        } catch (e) {}
+      }
+    };
+    loadStats();
+    window.addEventListener('storage', loadStats);
+    return () => window.removeEventListener('storage', loadStats);
+  }, []);
+
+  const gridColsClass =
+    displayedStats.length === 4
+      ? 'grid-cols-2 lg:grid-cols-4'
+      : displayedStats.length === 5
+      ? 'grid-cols-2 lg:grid-cols-5'
+      : 'grid-cols-2 lg:grid-cols-4';
 
   return (
     <section className="relative py-20 bg-[#FAFAFA] border-y border-[#EAEAEA]">
       <div ref={ref} className="container-premium">
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-6">
-          {stats.map((stat, i) => (
-            <FadeIn key={stat.label} delay={i * 0.1} className="h-full">
+        <div className={`grid ${gridColsClass} gap-6`}>
+          {displayedStats.map((stat, i) => (
+            <FadeIn key={stat.label + i} delay={i * 0.1} className="h-full">
               <div className="bg-white border border-[#EAEAEA] p-6 rounded-2xl text-center hover:border-[#000000] transition-all duration-500 hover:shadow-[0_15px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 h-full flex flex-col items-center justify-center">
                 <div className="w-12 h-12 rounded-full bg-[#FAFAFA] border border-[#EAEAEA] flex items-center justify-center mb-3">
                   <stat.icon className="text-[#000000]" size={20} />
@@ -572,6 +629,34 @@ const PortfolioSection = () => {
    ============================================ */
 
 const VideoShowcaseSection = () => {
+  const [filmsList, setFilmsList] = useState(() => {
+    const saved = localStorage.getItem('bobby_studio_cms_videos');
+    return saved ? JSON.parse(saved) : videoShowcase;
+  });
+
+  useEffect(() => {
+    const loadFilms = () => {
+      const saved = localStorage.getItem('bobby_studio_cms_videos');
+      if (saved) {
+        try {
+          setFilmsList(JSON.parse(saved));
+        } catch (e) {}
+      }
+    };
+    loadFilms();
+    window.addEventListener('storage', loadFilms);
+    return () => window.removeEventListener('storage', loadFilms);
+  }, []);
+
+  const getYoutubeThumb = (url: string) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url ? url.match(regExp) : null;
+    if (match && match[2].length === 11) {
+      return `https://img.youtube.com/vi/${match[2]}/hqdefault.jpg`;
+    }
+    return '/images/hero_new_1.jpg';
+  };
+
   return (
     <section id="cinematography" className="pt-6 pb-20 bg-white text-[#000000] overflow-hidden scroll-mt-24">
       <div className="container-premium">
@@ -583,8 +668,8 @@ const VideoShowcaseSection = () => {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {videoShowcase.map((video, i) => (
-            <FadeIn key={video.id} delay={i * 0.15}>
+          {filmsList.map((video: any, i: number) => (
+            <FadeIn key={video.id || i} delay={i * 0.15}>
               <a
                 href={video.youtubeUrl}
                 target="_blank"
@@ -594,7 +679,7 @@ const VideoShowcaseSection = () => {
                 {/* Thumbnail Image Header */}
                 <div className="aspect-video relative overflow-hidden bg-black">
                   <img
-                    src={video.thumbnail}
+                    src={video.thumbnail || getYoutubeThumb(video.youtubeUrl)}
                     alt={video.title}
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"
                   />
@@ -606,13 +691,13 @@ const VideoShowcaseSection = () => {
                   </div>
 
                   <span className="absolute top-4 right-4 z-10 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-xs text-white font-display border border-white/20">
-                    {video.duration}
+                    {video.duration || '4:00'}
                   </span>
                 </div>
 
                 {/* Card Content */}
                 <div className="p-6 bg-[#FAFAFA]">
-                  <p className="text-[#555555] text-xs tracking-wider uppercase mb-1 font-display font-medium">{video.location}</p>
+                  <p className="text-[#555555] text-xs tracking-wider uppercase mb-1 font-display font-medium">{video.location || 'Location'}</p>
                   <h3 className="text-lg font-luxury text-[#000000] font-bold mb-4 group-hover:text-black transition-colors">{video.title}</h3>
                   <div className="inline-flex items-center gap-2 text-xs font-display font-semibold text-[#000000] group-hover:translate-x-1 transition-transform">
                     <span>Watch Full Film on YouTube</span>
@@ -756,6 +841,22 @@ const socialGlassIcons: GlassIconsItem[] = [
 ];
 
 const InstagramSection = () => {
+  const cmsInstagram = (() => {
+    const saved = localStorage.getItem('bobby_studio_cms_instagram');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return parsed.map((item: any) => ({
+          image: item.image,
+          text: item.label || '',
+        }));
+      } catch (e) {
+        return circularGalleryItems;
+      }
+    }
+    return circularGalleryItems;
+  })();
+
   return (
     <section className="py-16 bg-[#FAF8F5] border-t border-[#EAEAEA] overflow-hidden">
       <div className="container-premium text-center mb-4">
@@ -768,7 +869,8 @@ const InstagramSection = () => {
       {/* 3D WebGL Circular Gallery Component from React Bits */}
       <div className="w-full h-[460px] md:h-[540px] relative">
         <CircularGallery
-          items={circularGalleryItems}
+          key={JSON.stringify(cmsInstagram)}
+          items={cmsInstagram.length > 0 ? cmsInstagram : circularGalleryItems}
           bend={3}
           textColor="#000000"
           borderRadius={0.06}
@@ -813,18 +915,20 @@ const ContactCTASection = () => {
             Let's Create Something <span className="text-white italic font-bold">Beautiful Together</span>
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/book">
-              <Button variant="primary" size="lg" icon={<FiCalendar />}>
-                Book Your Session
-              </Button>
+            <Link
+              to="/book"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-black text-sm font-display font-bold tracking-wider rounded-full hover:bg-[#F0F0F0] hover:scale-105 transition-all duration-300 shadow-xl"
+            >
+              <FiCalendar size={18} className="text-black" />
+              Book Your Session
             </Link>
             <a
               href="https://wa.me/919949216881?text=Hi%20Bobby%20Studio!%20I'm%20ready%20to%20book%20a%20shoot."
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-4 glass rounded-full text-white text-sm font-display font-semibold tracking-wider hover:bg-white/20 transition-all duration-300"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-black text-sm font-display font-bold tracking-wider rounded-full hover:bg-[#F0F0F0] hover:scale-105 transition-all duration-300 shadow-xl"
             >
-              <FaWhatsapp size={18} className="text-green-400" />
+              <FaWhatsapp size={18} className="text-emerald-600" />
               Chat on WhatsApp
             </a>
           </div>

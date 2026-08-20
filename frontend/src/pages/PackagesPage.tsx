@@ -154,7 +154,33 @@ const packages: Record<string, Array<{
 
 const PackagesPage = () => {
   const [activeCategory, setActiveCategory] = useState('Wedding');
-  const currentPackages = packages[activeCategory];
+
+  const currentPackages = (() => {
+    const saved = localStorage.getItem('bobby_studio_cms_packages');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const categoryCms = parsed.filter(
+          (item: any) => item.category?.toLowerCase() === activeCategory.toLowerCase() && item.isPublished !== false
+        );
+        if (categoryCms.length > 0) {
+          return categoryCms.map((item: any) => ({
+            name: item.name,
+            tier: item.tier || item.badge || 'Package',
+            price: typeof item.price === 'number' ? `₹${item.price.toLocaleString('en-IN')}` : item.price,
+            originalPrice: item.originalPrice ? `₹${Number(item.originalPrice).toLocaleString('en-IN')}` : undefined,
+            description: item.description,
+            popular: item.isPopular,
+            features: (item.features || []).map((featName: string) => ({
+              name: featName,
+              included: true,
+            })),
+          }));
+        }
+      } catch (e) {}
+    }
+    return packages[activeCategory] || [];
+  })();
 
   return (
     <motion.div
@@ -185,20 +211,23 @@ const PackagesPage = () => {
       <section className="pb-12">
         <div className="container-premium">
           <FadeIn>
-            <div className="flex justify-center gap-2">
-              {packageCategories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`px-6 py-2.5 rounded-full text-sm font-display transition-all duration-300 ${
-                    activeCategory === cat
-                      ? 'bg-primary text-background shadow-gold'
-                      : 'glass text-muted hover:text-text'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
+            <div className="flex flex-wrap justify-center gap-3">
+              {packageCategories.map((cat) => {
+                const isActive = activeCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    className={`px-8 py-3 rounded-full text-sm font-display font-bold tracking-wider uppercase transition-all duration-300 cursor-pointer shadow-md transform hover:-translate-y-0.5 active:translate-y-0 ${
+                      isActive
+                        ? 'bg-black text-white ring-2 ring-[#D4B896] shadow-xl scale-105'
+                        : 'bg-white/90 text-black border border-[#EAEAEA] hover:bg-[#D4B896] hover:text-black hover:border-[#D4B896]'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
             </div>
           </FadeIn>
         </div>
@@ -207,60 +236,62 @@ const PackagesPage = () => {
       {/* Pricing Cards */}
       <section className="section-padding !pt-0">
         <div className="container-premium">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {currentPackages.map((pkg, i) => (
-              <FadeIn key={pkg.name + activeCategory} delay={i * 0.15}>
+          <motion.div
+            key={activeCategory}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.35, ease: 'easeOut' }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"
+          >
+            {currentPackages.map((pkg: any, i: number) => (
+              <FadeIn key={pkg.name + activeCategory} delay={i * 0.1}>
                 <FloatingCard intensity={3}>
-                  <div className={`relative h-full rounded-2xl overflow-hidden transition-all duration-500 ${
-                    pkg.popular
-                      ? 'glass border-primary/30 shadow-gold'
-                      : 'glass hover:border-primary/15'
-                  }`}>
-                    {/* Popular badge */}
-                    {pkg.popular && (
-                      <div className="absolute top-0 left-0 right-0 py-2 bg-gradient-gold text-center">
-                        <span className="text-background text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-1">
-                          <FiStar size={12} /> Most Popular
-                        </span>
-                      </div>
-                    )}
-
-                    <div className={`p-8 ${pkg.popular ? 'pt-14' : ''}`}>
+                  <motion.div
+                    whileHover={{ y: -8 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                    className="relative h-full rounded-2xl overflow-hidden transition-all duration-500 bg-white border border-[#EAEAEA] hover:border-black/50 hover:shadow-xl"
+                  >
+                    <div className="p-8">
                       {/* Header */}
                       <div className="mb-6">
-                        <p className="text-primary text-xs tracking-[0.2em] uppercase font-display">{pkg.tier}</p>
-                        <h3 className="text-2xl font-luxury text-text mt-1">{pkg.name}</h3>
-                        <p className="text-muted text-sm mt-2 leading-relaxed">{pkg.description}</p>
+                        <p className="text-xs tracking-[0.2em] uppercase font-display font-bold text-[#888888]">{pkg.tier}</p>
+                        <h3 className="text-2xl font-luxury text-black mt-1 font-bold">{pkg.name}</h3>
+                        <p className="text-[#555555] text-sm mt-2 leading-relaxed">{pkg.description}</p>
                       </div>
 
                       {/* Price */}
-                      <div className="mb-6 pb-6 border-b border-glass-border">
+                      <div className="mb-6 pb-6 border-b border-[#EAEAEA]">
                         <div className="flex items-baseline gap-2">
-                          <span className="text-3xl font-display font-bold text-text">{pkg.price}</span>
+                          <span className="text-3xl font-display font-bold text-black">{pkg.price}</span>
                         </div>
                         {pkg.originalPrice && (
-                          <span className="text-sm text-muted line-through">{pkg.originalPrice}</span>
+                          <span className="text-sm text-[#888888] line-through">{pkg.originalPrice}</span>
                         )}
                       </div>
 
                       {/* Features */}
                       <div className="space-y-3 mb-8">
-                        {pkg.features.map((f) => (
+                        {pkg.features.map((f: any) => (
                           <div key={f.name} className="flex items-center gap-3 text-sm">
                             {f.included ? (
-                              <FiCheck className="text-primary flex-shrink-0" size={16} />
+                              <FiCheck className="text-black flex-shrink-0" size={16} />
                             ) : (
-                              <FiX className="text-muted/30 flex-shrink-0" size={16} />
+                              <FiX className="text-[#CCCCCC] flex-shrink-0" size={16} />
                             )}
-                            <span className={f.included ? 'text-text/80' : 'text-muted/40'}>{f.name}</span>
+                            <span className={f.included ? 'text-black font-medium' : 'text-[#999999] line-through'}>{f.name}</span>
                           </div>
                         ))}
                       </div>
 
                       {/* CTA */}
-                      <Link to="/book" className="block">
+                      <Link
+                        to="/book"
+                        state={{ selectedService: activeCategory, packageChoice: pkg.name }}
+                        className="block"
+                      >
                         <Button
-                          variant={pkg.popular ? 'primary' : 'secondary'}
+                          variant="secondary"
                           fullWidth
                           icon={<FiArrowRight />}
                         >
@@ -268,11 +299,11 @@ const PackagesPage = () => {
                         </Button>
                       </Link>
                     </div>
-                  </div>
+                  </motion.div>
                 </FloatingCard>
               </FadeIn>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 

@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { FiArrowUpRight, FiCheck, FiCamera, FiHeart, FiGift, FiDroplet, FiGrid, FiHome, FiMapPin, FiUsers, FiX, FiCalendar, FiClock, FiAward, FiPackage, FiZap } from 'react-icons/fi';
+import { FiArrowUpRight, FiCheck, FiCamera, FiHeart, FiGift, FiDroplet, FiGrid, FiHome, FiMapPin, FiUsers, FiX, FiCalendar, FiClock, FiAward, FiPackage, FiZap, FiPlay, FiArrowRight } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import FadeIn from '@/components/animations/FadeIn';
 import FloatingCard from '@/components/animations/FloatingCard';
 import Button from '@/components/ui/Button';
+import SectionHeading from '@/components/ui/SectionHeading';
 
 const allServices = [
   {
@@ -92,31 +93,7 @@ const allServices = [
     color: 'from-pink-900/30 to-fuchsia-900/20',
     featured: false
   },
-  {
-    id: 'food',
-    title: 'Food Photography',
-    desc: 'Mouthwatering food imagery that makes every dish irresistible.',
-    detailedDesc: 'Artisanal food styling and commercial studio lighting tailored for luxury restaurants, cookbooks, and high-end menus. We bring out rich textures, vibrant colors, and steam details.',
-    icon: FiDroplet,
-    price: '₹12,999',
-    coverImage: '/images/about_studio_story.png',
-    duration: 'Half Day Studio / On-Site Shoot',
-    team: 'Commercial Food Stylist + Lead Photographer',
-    highlights: [
-      'Prop Styling & Surface Background Setup',
-      'Full Menu & Signature Dish Shoot',
-      'Social Media & Zomato/Swiggy Ready Aspect Ratios',
-      'High-Speed Action Shots (Splashes, Pouring, Steam)',
-      'Top-Down Flat Lays & Hero Macro Shots'
-    ],
-    deliverables: [
-      '40+ Commercial Retouched Food Images',
-      'Multiple Aspect Ratios (1:1, 4:5, 16:9)',
-      'Full Commercial Usage License'
-    ],
-    color: 'from-orange-900/30 to-red-900/20',
-    featured: false
-  },
+
   {
     id: 'portrait',
     title: 'Portrait Photography',
@@ -167,31 +144,7 @@ const allServices = [
     color: 'from-pink-800/30 to-rose-900/20',
     featured: false
   },
-  {
-    id: 'architecture',
-    title: 'Architecture & Interior',
-    desc: 'Showcase spaces with dramatic angles and perfect lighting.',
-    detailedDesc: 'Precision architectural photography for luxury hotels, real estate developers, interior designers, and architects. We use tilt-shift optics and ambient-flash blending.',
-    icon: FiHome,
-    price: '₹24,999',
-    coverImage: '/images/hero_slider_2.jpg',
-    duration: 'Full Day Property Shoot',
-    team: 'Architectural Photographer + Lighting Tech',
-    highlights: [
-      'Ultra-Wide Angle Tilt-Shift Optics',
-      'Ambient & Strobe HDR Flash Blending',
-      '4K Aerial Drone Exterior Property Shots',
-      'Twilight & Night Exterior Lighting Shots',
-      'High-Resolution Magazine-Ready Delivery'
-    ],
-    deliverables: [
-      '35+ Architectural Color-Corrected Images',
-      'Architectural Magazine License',
-      'Digital Cloud Access'
-    ],
-    color: 'from-emerald-900/30 to-teal-900/20',
-    featured: false
-  },
+
   {
     id: 'destination',
     title: 'Destination Shoots',
@@ -217,35 +170,149 @@ const allServices = [
     ],
     color: 'from-teal-900/30 to-cyan-900/20',
     featured: true
+  }
+];
+
+const defaultVideoShowcase = [
+  {
+    id: 1,
+    title: 'The Royal Wedding Film — Aria & Vihaan',
+    location: 'Udaipur Palace',
+    duration: '4:20',
+    youtubeUrl: 'https://youtu.be/6ABes0mjhMw?si=RUeK6p7bIqQ0PHrP',
+    thumbnail: 'https://img.youtube.com/vi/6ABes0mjhMw/hqdefault.jpg'
   },
   {
-    id: 'jewellery',
-    title: 'Jewellery Photography',
-    desc: 'Capture the brilliance and detail of fine jewellery pieces.',
-    detailedDesc: 'Macro studio photography specialized in diamonds, gold, polki, and gemstones. We eliminate harsh reflections and capture intricate craftsmanship.',
-    icon: FiGrid,
-    price: '₹14,999',
-    coverImage: '/images/birthday_service.jpg',
-    duration: 'Studio Macro Shoot',
-    team: 'Jewellery Macro Specialist Photographer',
-    highlights: [
-      'Focus-Stacked High-Detail Macro Shots',
-      'Polarized Reflection & Gemstone Sparkle Control',
-      'True-to-Life Color Accuracy for Gold & Diamonds',
-      'Deep Etched White/Black Background Cataloging',
-      'Billboard & Print Advertisement Ready Resolution'
-    ],
-    deliverables: [
-      '25+ Focus-Stacked Retouched Jewellery Images',
-      'Transparent PNG Cuts & JPEG Files',
-      'Full Commercial License'
-    ],
-    color: 'from-yellow-900/30 to-amber-900/20',
-    featured: false
+    id: 2,
+    title: 'Sunset Magic in Goa — Pre-Wedding Film',
+    location: 'Goa Coast',
+    duration: '3:15',
+    youtubeUrl: 'https://youtu.be/uutZgpAoYE0?si=FwKN3re6AhVrpVC9',
+    thumbnail: 'https://img.youtube.com/vi/uutZgpAoYE0/hqdefault.jpg'
+  },
+  {
+    id: 3,
+    title: 'Jaipur Heritage Celebration',
+    location: 'Jaipur Fort',
+    duration: '5:40',
+    youtubeUrl: 'https://youtu.be/9dFYoAN_amQ?si=CRVooh0gCVpzXU08',
+    thumbnail: 'https://img.youtube.com/vi/9dFYoAN_amQ/hqdefault.jpg'
   },
 ];
 
+const CinematographySection = () => {
+  const [filmsList, setFilmsList] = useState(() => {
+    const saved = localStorage.getItem('bobby_studio_cms_videos');
+    return saved ? JSON.parse(saved) : defaultVideoShowcase;
+  });
+
+  useEffect(() => {
+    const loadFilms = () => {
+      const saved = localStorage.getItem('bobby_studio_cms_videos');
+      if (saved) {
+        try {
+          setFilmsList(JSON.parse(saved));
+        } catch (e) {}
+      }
+    };
+    loadFilms();
+    window.addEventListener('storage', loadFilms);
+    return () => window.removeEventListener('storage', loadFilms);
+  }, []);
+
+  const getYoutubeThumb = (url: string) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url ? url.match(regExp) : null;
+    if (match && match[2].length === 11) {
+      return `https://img.youtube.com/vi/${match[2]}/hqdefault.jpg`;
+    }
+    return '/images/hero_slider_1.jpg';
+  };
+
+  return (
+    <section id="cinematography" className="py-16 md:py-24 bg-white text-[#000000] overflow-hidden border-t border-[#EAEAEA]">
+      <div className="container-premium">
+        <SectionHeading
+          label="Cinematography"
+          title="4K Cinema"
+          titleAccent="Films"
+          description="Immerse yourself in our Hollywood-grade 4K wedding films and cinematic highlights."
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {filmsList.map((video: any, i: number) => (
+            <FadeIn key={video.id || i} delay={i * 0.15}>
+              <a
+                href={video.youtubeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block relative rounded-2xl overflow-hidden bg-[#FAFAFA] border border-[#EAEAEA] hover:border-black/40 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1.5"
+              >
+                {/* Thumbnail Image Header */}
+                <div className="aspect-video relative overflow-hidden bg-black">
+                  <img
+                    src={video.thumbnail || getYoutubeThumb(video.youtubeUrl)}
+                    alt={video.title}
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"
+                  />
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors" />
+
+                  {/* Play Button — Perfectly Centered */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-16 h-16 rounded-full bg-white/90 backdrop-blur-md border border-white flex items-center justify-center text-black shadow-xl group-hover:scale-110 group-hover:bg-black group-hover:text-white transition-all duration-300">
+                    <FiPlay size={24} className="ml-1" />
+                  </div>
+
+                  <span className="absolute top-4 right-4 z-10 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-xs text-white font-display border border-white/20">
+                    {video.duration || '4:00'}
+                  </span>
+                </div>
+
+                {/* Card Content */}
+                <div className="p-6 bg-[#FAFAFA]">
+                  <p className="text-[#555555] text-xs tracking-wider uppercase mb-1 font-display font-medium">{video.location || 'Location'}</p>
+                  <h3 className="text-lg font-luxury text-[#000000] font-bold mb-4 group-hover:text-black transition-colors">{video.title}</h3>
+                  <div className="inline-flex items-center gap-2 text-xs font-display font-semibold text-[#000000] group-hover:translate-x-1 transition-transform">
+                    <span>Watch Full Film on YouTube</span>
+                    <FiArrowRight size={14} />
+                  </div>
+                </div>
+              </a>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const ServicesPage = () => {
+  const [displayedServices] = useState(() => {
+    const cmsSaved = localStorage.getItem('bobby_studio_cms_services');
+    if (cmsSaved) {
+      try {
+        const cmsList = JSON.parse(cmsSaved);
+        return allServices.map((srv) => {
+          const matchedCms = cmsList.find(
+            (c: any) => c.name.toLowerCase() === srv.title.toLowerCase() || c.id === srv.id
+          );
+          if (matchedCms) {
+            return {
+              ...srv,
+              title: matchedCms.name || srv.title,
+              price: matchedCms.priceTag || srv.price,
+              desc: matchedCms.description || srv.desc,
+              coverImage: matchedCms.bgImage || matchedCms.imageUrl || srv.coverImage,
+            };
+          }
+          return srv;
+        });
+      } catch (e) {
+        return allServices;
+      }
+    }
+    return allServices;
+  });
+
   const [selectedService, setSelectedService] = useState<typeof allServices[0] | null>(null);
   const location = useLocation();
 
@@ -253,7 +320,7 @@ const ServicesPage = () => {
   useEffect(() => {
     const target = location.state?.selectedServiceId || location.state?.selectedService;
     if (target) {
-      const match = allServices.find(
+      const match = displayedServices.find(
         (s) =>
           s.id.toLowerCase() === target.toLowerCase() ||
           s.title.toLowerCase() === target.toLowerCase()
@@ -262,7 +329,7 @@ const ServicesPage = () => {
         setSelectedService(match);
       }
     }
-  }, [location.state]);
+  }, [location.state, displayedServices]);
 
   // Prevent background Lenis scroll interference when modal is open
   useEffect(() => {
@@ -305,7 +372,7 @@ const ServicesPage = () => {
       <section className="section-padding !pt-0">
         <div className="container-premium">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {allServices.map((service, i) => (
+            {displayedServices.map((service, i) => (
               <FadeIn key={service.title} delay={i * 0.06}>
                 <FloatingCard intensity={4}>
                   <div
@@ -327,10 +394,6 @@ const ServicesPage = () => {
                             Popular
                           </div>
                         )}
-
-                        <div className="absolute bottom-3 left-4 w-10 h-10 rounded-xl bg-white/90 backdrop-blur-md border border-black/10 flex items-center justify-center">
-                          <service.icon className="text-black" size={20} />
-                        </div>
                       </div>
 
                       {/* Card Content */}
@@ -431,7 +494,6 @@ const ServicesPage = () => {
                 <div className="absolute bottom-4 left-6 right-6 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
                   <div>
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-black text-white rounded-full text-[10px] font-bold uppercase tracking-wider mb-2">
-                      <selectedService.icon size={12} />
                       LUXURY SERVICE
                     </span>
                     <h2 className="text-2xl sm:text-3xl font-luxury text-black font-bold">
@@ -544,23 +606,10 @@ const ServicesPage = () => {
         )}
       </AnimatePresence>
 
-      {/* CTA */}
-      <section className="section-padding bg-card/30">
-        <div className="container-premium text-center">
-          <FadeIn>
-            <h2 className="text-display font-luxury text-black mb-4">
-              Can't Find What You <span className="text-black italic font-semibold">Need?</span>
-            </h2>
-            <p className="text-muted max-w-lg mx-auto mb-8">
-              We offer custom photography packages tailored to your unique requirements.
-              Let's discuss your vision.
-            </p>
-            <Link to="/contact">
-              <Button variant="primary" size="lg">Contact Us</Button>
-            </Link>
-          </FadeIn>
-        </div>
-      </section>
+      {/* Cinematography / 4K Cinema Films Section */}
+      <CinematographySection />
+
+
     </motion.div>
   );
 };

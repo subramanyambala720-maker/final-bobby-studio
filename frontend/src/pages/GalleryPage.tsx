@@ -10,25 +10,86 @@ import SectionHeading from '@/components/ui/SectionHeading';
 
 const galleryCategories = ['All', 'Wedding', 'Pre-Wedding', 'Portrait', 'Fashion', 'Product', 'Baby', 'Food', 'Behind the Scenes'];
 
-const galleryItems = [
-  { id: 1, title: 'Royal Udaipur Wedding', category: 'Wedding', type: 'photo', aspect: 'tall', color: 'from-amber-900/60 to-rose-900/40', tags: ['Palace', 'Candid', 'Golden Hour'] },
-  { id: 2, title: 'Monsoon Pre-Wedding', category: 'Pre-Wedding', type: 'photo', aspect: 'wide', color: 'from-teal-900/60 to-emerald-900/40', tags: ['Rain', 'Romantic', 'Outdoor'] },
-  { id: 3, title: 'Luxury Portrait', category: 'Portrait', type: 'photo', aspect: 'square', color: 'from-stone-800/60 to-neutral-900/40', tags: ['Studio', 'Moody', 'B&W'] },
-  { id: 4, title: 'Vogue Editorial', category: 'Fashion', type: 'photo', aspect: 'tall', color: 'from-violet-900/60 to-indigo-900/40', tags: ['Editorial', 'High Fashion', 'Studio'] },
-  { id: 5, title: 'Showreel 2024', category: 'Wedding', type: 'video', aspect: 'wide', color: 'from-amber-900/80 to-black/60', tags: ['Film', 'Cinematic', '4K'] },
-  { id: 6, title: 'Diamond Jewellery', category: 'Product', type: 'photo', aspect: 'square', color: 'from-zinc-800/60 to-slate-900/40', tags: ['Macro', 'Luxury', 'Product'] },
-  { id: 7, title: 'Newborn Serenity', category: 'Baby', type: 'photo', aspect: 'tall', color: 'from-pink-800/60 to-rose-900/40', tags: ['Newborn', 'Safe', 'Precious'] },
-  { id: 8, title: 'Goa Beach Romance', category: 'Pre-Wedding', type: 'photo', aspect: 'wide', color: 'from-sky-900/60 to-blue-900/40', tags: ['Beach', 'Sunset', 'Destination'] },
+interface GalleryItem {
+  id: number;
+  title: string;
+  category: string;
+  type: string;
+  aspect: string;
+  color: string;
+  tags: string[];
+  image?: string;
+}
+
+const galleryItems: GalleryItem[] = [
+  {
+    id: 101,
+    title: 'Little Krishna Celebration',
+    category: 'Baby',
+    type: 'photo',
+    aspect: 'tall',
+    color: 'from-amber-900/60 to-purple-900/40',
+    tags: ['Baby Shoot', 'Krishna', 'Traditional'],
+    image: '/images/gallery_baby_krishna.jpg',
+  },
+  {
+    id: 102,
+    title: 'Mehndi & Ring Ceremony',
+    category: 'Pre-Wedding',
+    type: 'photo',
+    aspect: 'tall',
+    color: 'from-pink-900/60 to-purple-900/40',
+    tags: ['Mehndi', 'Rings', 'Detail'],
+    image: '/images/gallery_mehndi_rings.jpg',
+  },
+  {
+    id: 103,
+    title: 'Royal Varmala Walk',
+    category: 'Wedding',
+    type: 'photo',
+    aspect: 'tall',
+    color: 'from-rose-900/60 to-amber-900/40',
+    tags: ['Royal Wedding', 'Varmala', 'Bridal'],
+    image: '/images/gallery_royal_wedding_couple.jpg',
+  },
+  {
+    id: 104,
+    title: 'Eternal Vows & Flowers',
+    category: 'Wedding',
+    type: 'photo',
+    aspect: 'tall',
+    color: 'from-amber-900/60 to-red-900/40',
+    tags: ['South Indian', 'Garlands', 'Emotions'],
+    image: '/images/gallery_south_wedding_garlands.jpg',
+  },
+  {
+    id: 105,
+    title: 'Luxury Drive Portrait',
+    category: 'Portrait',
+    type: 'photo',
+    aspect: 'tall',
+    color: 'from-slate-900/60 to-neutral-900/40',
+    tags: ['Outdoor', 'Luxury Car', 'Style'],
+    image: '/images/gallery_car_portrait.jpg',
+  },
+  { id: 1, title: 'Royal Udaipur Wedding', category: 'Wedding', type: 'photo', aspect: 'tall', color: 'from-amber-900/60 to-rose-900/40', tags: ['Palace', 'Candid', 'Golden Hour'], image: '/images/hero_new_1.jpg' },
+  { id: 2, title: 'Monsoon Pre-Wedding', category: 'Pre-Wedding', type: 'photo', aspect: 'wide', color: 'from-teal-900/60 to-emerald-900/40', tags: ['Rain', 'Romantic', 'Outdoor'], image: '/images/hero_new_2.jpg' },
+  { id: 3, title: 'Luxury Portrait', category: 'Portrait', type: 'photo', aspect: 'square', color: 'from-stone-800/60 to-neutral-900/40', tags: ['Studio', 'Moody', 'B&W'], image: '/images/hero_new_3.jpg' },
+  { id: 4, title: 'Vogue Editorial', category: 'Fashion', type: 'photo', aspect: 'tall', color: 'from-violet-900/60 to-indigo-900/40', tags: ['Editorial', 'High Fashion', 'Studio'], image: '/images/hero_new_4.jpg' },
+  { id: 5, title: 'Showreel 2024', category: 'Wedding', type: 'video', aspect: 'wide', color: 'from-amber-900/80 to-black/60', tags: ['Film', 'Cinematic', '4K'], image: '/images/new_anim_wedding_family.jpg' },
+  { id: 6, title: 'Diamond Jewellery', category: 'Product', type: 'photo', aspect: 'square', color: 'from-zinc-800/60 to-slate-900/40', tags: ['Macro', 'Luxury', 'Product'], image: '/images/gallery_mehndi_rings.jpg' },
+  { id: 7, title: 'Newborn Serenity', category: 'Baby', type: 'photo', aspect: 'tall', color: 'from-pink-800/60 to-rose-900/40', tags: ['Newborn', 'Safe', 'Precious'], image: '/images/gallery_baby_krishna.jpg' },
+  { id: 8, title: 'Goa Beach Romance', category: 'Pre-Wedding', type: 'photo', aspect: 'wide', color: 'from-sky-900/60 to-blue-900/40', tags: ['Beach', 'Sunset', 'Destination'], image: '/images/hero_new_2.jpg' },
   { id: 9, title: 'Fine Dining Artistry', category: 'Food', type: 'photo', aspect: 'square', color: 'from-orange-900/60 to-red-900/40', tags: ['Food', 'Lifestyle', 'Luxury'] },
-  { id: 10, title: 'Bridal Collection', category: 'Fashion', type: 'photo', aspect: 'tall', color: 'from-rose-900/60 to-pink-900/40', tags: ['Bridal', 'Couture', 'Elegant'] },
-  { id: 11, title: 'Jaipur Heritage Wedding', category: 'Wedding', type: 'photo', aspect: 'wide', color: 'from-yellow-900/60 to-amber-900/40', tags: ['Heritage', 'Palace', 'Royal'] },
-  { id: 12, title: 'Maternity in Light', category: 'Baby', type: 'photo', aspect: 'square', color: 'from-rose-800/60 to-pink-800/40', tags: ['Maternity', 'Glow', 'Natural'] },
+  { id: 10, title: 'Bridal Collection', category: 'Fashion', type: 'photo', aspect: 'tall', color: 'from-rose-900/60 to-pink-900/40', tags: ['Bridal', 'Couture', 'Elegant'], image: '/images/gallery_royal_wedding_couple.jpg' },
+  { id: 11, title: 'Jaipur Heritage Wedding', category: 'Wedding', type: 'photo', aspect: 'wide', color: 'from-yellow-900/60 to-amber-900/40', tags: ['Heritage', 'Palace', 'Royal'], image: '/images/gallery_south_wedding_garlands.jpg' },
+  { id: 12, title: 'Maternity in Light', category: 'Baby', type: 'photo', aspect: 'square', color: 'from-rose-800/60 to-pink-800/40', tags: ['Maternity', 'Glow', 'Natural'], image: '/images/gallery_baby_krishna.jpg' },
   { id: 13, title: 'Studio Secrets', category: 'Behind the Scenes', type: 'video', aspect: 'wide', color: 'from-gray-900/80 to-black/60', tags: ['BTS', 'Studio', 'Process'] },
-  { id: 14, title: 'Monochrome Portrait', category: 'Portrait', type: 'photo', aspect: 'tall', color: 'from-neutral-800/80 to-black/60', tags: ['B&W', 'Classic', 'Dramatic'] },
+  { id: 14, title: 'Monochrome Portrait', category: 'Portrait', type: 'photo', aspect: 'tall', color: 'from-neutral-800/80 to-black/60', tags: ['B&W', 'Classic', 'Dramatic'], image: '/images/gallery_car_portrait.jpg' },
   { id: 15, title: 'Watch Campaign', category: 'Product', type: 'photo', aspect: 'square', color: 'from-slate-800/60 to-gray-900/40', tags: ['Luxury', 'Watch', 'Macro'] },
-  { id: 16, title: 'Kerala Backwaters', category: 'Wedding', type: 'photo', aspect: 'wide', color: 'from-emerald-900/60 to-teal-900/40', tags: ['Destination', 'Boat', 'Serene'] },
-  { id: 17, title: 'Streetwear Editorial', category: 'Fashion', type: 'photo', aspect: 'square', color: 'from-gray-800/60 to-slate-900/40', tags: ['Urban', 'Street', 'Modern'] },
-  { id: 18, title: 'Family Portraits', category: 'Portrait', type: 'photo', aspect: 'wide', color: 'from-amber-800/60 to-stone-900/40', tags: ['Family', 'Outdoor', 'Warm'] },
+  { id: 16, title: 'Kerala Backwaters', category: 'Wedding', type: 'photo', aspect: 'wide', color: 'from-emerald-900/60 to-teal-900/40', tags: ['Destination', 'Boat', 'Serene'], image: '/images/gallery_south_wedding_garlands.jpg' },
+  { id: 17, title: 'Streetwear Editorial', category: 'Fashion', type: 'photo', aspect: 'square', color: 'from-gray-800/60 to-slate-900/40', tags: ['Urban', 'Street', 'Modern'], image: '/images/gallery_car_portrait.jpg' },
+  { id: 18, title: 'Family Portraits', category: 'Portrait', type: 'photo', aspect: 'wide', color: 'from-amber-800/60 to-stone-900/40', tags: ['Family', 'Outdoor', 'Warm'], image: '/images/new_anim_wedding_family.jpg' },
 ];
 
 /* ============================================
@@ -86,14 +147,17 @@ const Lightbox = ({ item, onClose, onPrev, onNext }: LightboxProps) => {
         onClick={(e) => e.stopPropagation()}
       >
         <div className={`w-full ${item.aspect === 'tall' ? 'aspect-[3/4]' : item.aspect === 'wide' ? 'aspect-[16/9]' : 'aspect-square'} rounded-2xl overflow-hidden bg-gradient-to-br ${item.color} relative`}>
+          {item.image && (
+            <img src={item.image} alt={item.title} className="w-full h-full object-cover absolute inset-0" />
+          )}
           {item.type === 'video' && (
-            <div className="absolute inset-0 flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center justify-center bg-black/30">
               <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center cursor-pointer hover:bg-white/30 transition-colors">
                 <FiPlay size={32} className="text-white ml-1" />
               </div>
             </div>
           )}
-          {item.type === 'photo' && (
+          {!item.image && item.type === 'photo' && (
             <div className="absolute inset-0 flex items-center justify-center opacity-15">
               <FiCamera size={80} className="text-white" />
             </div>
@@ -135,13 +199,37 @@ const Lightbox = ({ item, onClose, onPrev, onNext }: LightboxProps) => {
 
 const GalleryPage = () => {
   const [activeCategory, setActiveCategory] = useState('All');
+
+  const allGalleryItems = (() => {
+    const saved = localStorage.getItem('bobby_studio_cms_portfolio');
+    if (saved) {
+      try {
+        const cmsProjects = JSON.parse(saved).filter((p: any) => p.isPublished !== false);
+        const cmsItems = cmsProjects.map((p: any, idx: number) => ({
+          id: p.id || idx + 200,
+          title: p.title,
+          category: p.category ? p.category.charAt(0).toUpperCase() + p.category.slice(1) : 'Wedding',
+          type: 'photo',
+          aspect: 'tall',
+          color: 'from-[#111111] to-[#222222]',
+          tags: [p.category || 'Wedding', 'Bobby Studio'],
+          image: p.coverImage,
+        }));
+        return cmsItems.length > 0 ? cmsItems : galleryItems;
+      } catch {
+        return galleryItems;
+      }
+    }
+    return galleryItems;
+  })();
+
   const [lightboxItem, setLightboxItem] = useState<typeof galleryItems[0] | null>(null);
 
   const filtered = activeCategory === 'All'
-    ? galleryItems
-    : galleryItems.filter((i) => i.category === activeCategory);
+    ? allGalleryItems
+    : allGalleryItems.filter((i: any) => i.category.toLowerCase() === activeCategory.toLowerCase());
 
-  const lightboxIndex = lightboxItem ? filtered.findIndex((i) => i.id === lightboxItem.id) : -1;
+  const lightboxIndex = lightboxItem ? filtered.findIndex((i: any) => i.id === lightboxItem.id) : -1;
 
   const handlePrev = () => {
     if (lightboxIndex > 0) setLightboxItem(filtered[lightboxIndex - 1]);
@@ -215,7 +303,7 @@ const GalleryPage = () => {
             layout
           >
             <AnimatePresence mode="popLayout">
-              {filtered.map((item, i) => (
+              {filtered.map((item: any, i: number) => (
                 <motion.div
                   key={item.id}
                   layout
@@ -232,16 +320,21 @@ const GalleryPage = () => {
                     <div className={`w-full ${
                       item.aspect === 'tall' ? 'aspect-[3/4]' :
                       item.aspect === 'wide' ? 'aspect-video' : 'aspect-square'
-                    } bg-gradient-to-br ${item.color} relative`}>
+                    } bg-gradient-to-br ${item.color} relative overflow-hidden`}>
+                      {item.image && (
+                        <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      )}
                       {item.type === 'video' && (
-                        <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 glass rounded-full text-xs text-white">
+                        <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 glass rounded-full text-xs text-white z-10">
                           <FiPlay size={10} />
                           <span>Video</span>
                         </div>
                       )}
-                      <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                        <FiCamera size={36} className="text-white" />
-                      </div>
+                      {!item.image && (
+                        <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                          <FiCamera size={36} className="text-white" />
+                        </div>
+                      )}
                       {/* Hover overlay */}
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all duration-400 flex items-end">
                         <div className="opacity-0 group-hover:opacity-100 transition-all duration-400 translate-y-4 group-hover:translate-y-0 p-4 w-full">

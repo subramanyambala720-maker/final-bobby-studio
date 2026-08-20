@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { FiCamera, FiAward, FiHeart, FiUsers, FiStar, FiTarget, FiZap, FiGlobe } from 'react-icons/fi';
@@ -28,27 +28,6 @@ const teamMembers = [
     bio: 'A filmmaker at heart, Arjun creates cinematic wedding films that rival Hollywood productions. His drone work is legendary.',
     specialties: ['Cinematography', 'Drone', 'Film'],
     awards: 12,
-  },
-  {
-    name: 'Meera Reddy',
-    role: 'Portrait Specialist',
-    bio: 'Meera specializes in intimate portrait sessions that reveal the true essence of her subjects. Her work has been featured in Vogue India.',
-    specialties: ['Portrait', 'Fashion', 'Maternity'],
-    awards: 6,
-  },
-  {
-    name: 'Vikram Singh',
-    role: 'Product & Food Photographer',
-    bio: 'Vikram transforms ordinary products into visual masterpieces. His commercial work has elevated dozens of premium Indian brands.',
-    specialties: ['Product', 'Food', 'Commercial'],
-    awards: 9,
-  },
-  {
-    name: 'Ananya Patel',
-    role: 'Post-Production Lead',
-    bio: 'Ananya oversees all editing and color grading, ensuring every image meets the Bobby Studio standard of perfection.',
-    specialties: ['Editing', 'Color Grading', 'Retouching'],
-    awards: 5,
   },
 ];
 
@@ -97,6 +76,37 @@ const equipment = [
 const AboutPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { hash } = useLocation();
+
+  const [teamList, setTeamList] = useState(() => {
+    const saved = localStorage.getItem('bobby_studio_cms_about_team');
+    return saved ? JSON.parse(saved) : teamMembers;
+  });
+
+  useEffect(() => {
+    const loadTeam = () => {
+      const saved = localStorage.getItem('bobby_studio_cms_about_team');
+      if (saved) {
+        try {
+          setTeamList(JSON.parse(saved));
+        } catch {}
+      }
+    };
+    loadTeam();
+    window.addEventListener('storage', loadTeam);
+    return () => window.removeEventListener('storage', loadTeam);
+  }, []);
+
+  const aboutContent = (() => {
+    const saved = localStorage.getItem('bobby_studio_cms_about');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  })();
 
   useEffect(() => {
     if (hash === '#team') {
@@ -293,11 +303,11 @@ const AboutPage = () => {
             description="A collective of passionate artists, storytellers, and technical masters."
           />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {teamMembers.map((member, i) => (
-              <FadeIn key={member.name} delay={i * 0.1}>
+            {teamList.map((member: any, i: number) => (
+              <FadeIn key={member.id || `${member.name}-${i}`} delay={i * 0.1}>
                 <div className="bg-white border border-[#EAEAEA] rounded-3xl p-8 hover:border-[#000000] transition-all duration-500 hover:-translate-y-2 group shadow-sm">
                   <div className="w-20 h-20 rounded-full bg-[#FAFAFA] border border-[#EAEAEA] flex items-center justify-center mb-6 text-2xl font-luxury text-[#000000] font-bold">
-                    {member.name.charAt(0)}
+                    {member.name ? member.name.charAt(0) : 'T'}
                   </div>
                   <h3 className="text-xl font-luxury text-[#000000] mb-1 font-semibold group-hover:text-[#000000] transition-colors">{member.name}</h3>
                   <p className="text-xs text-[#555555] tracking-widest uppercase font-display mb-4 font-semibold">{member.role}</p>

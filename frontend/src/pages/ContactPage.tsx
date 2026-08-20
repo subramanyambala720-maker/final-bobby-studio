@@ -9,7 +9,7 @@ import GlassIcons from '@/components/ui/GlassIcons';
 const contactInfo = [
   { icon: FiPhone, label: 'Phone', value: '+91 99492 16881', href: 'tel:+919949216881', sub: 'Mon-Sat, 9am-8pm' },
   { icon: FiMail, label: 'Email', value: 'subramanyambala720@gmail.com', href: 'mailto:subramanyambala720@gmail.com', sub: 'We reply within 24 hours' },
-  { icon: FiMapPin, label: 'Studio', value: '42 Premium Avenue, Photography District', href: '#map', sub: 'Creative City — 400001' },
+  { icon: FiMapPin, label: 'Studio Location', value: 'Bobby Studio, YVR Luxury Location', href: 'https://www.google.com/maps/place/Yvr+Luxury+Boys+PG/@17.3459465,78.3224294,17z/data=!3m1!4b1!4m6!3m5!1s0x3bcb950009070931:0x2223242406072e9d!8m2!3d17.3459465!4d78.3250043!16s%2Fg%2F11z911pwzd?entry=ttu&g_ep=EgoyMDI2MDcyOS4wIKXMDSoASAFQAw%3D%3D', target: '_blank', sub: 'Click to open Google Maps' },
   { icon: FiClock, label: 'Working Hours', value: 'Mon - Sat: 9:00 AM - 8:00 PM', href: undefined, sub: 'Sunday by appointment only' },
 ];
 
@@ -34,7 +34,6 @@ const serviceOptions = [
   'Fashion Photography',
   'Cinematography',
   'Product Photography',
-  'Food Photography',
   'Corporate Event',
   'Baby / Newborn',
   'Destination Shoot',
@@ -55,8 +54,44 @@ const ContactPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((r) => setTimeout(r, 1500));
+
+    const newMsg = {
+      id: `MSG-${Math.floor(1000 + Math.random() * 9000)}`,
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone || '+91 98765 43210',
+      service: formData.service || 'General Inquiry',
+      message: formData.message,
+      status: 'new' as const,
+      date: 'Just now',
+    };
+
+    // Save to local storage for Admin Portal Inbox
+    try {
+      const existing = localStorage.getItem('bobby_studio_contact_messages');
+      const list = existing ? JSON.parse(existing) : [];
+      localStorage.setItem('bobby_studio_contact_messages', JSON.stringify([newMsg, ...list]));
+    } catch (e) {
+      console.error(e);
+    }
+
+    // POST to backend API
+    try {
+      await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          service: formData.service,
+          message: formData.message,
+        }),
+      });
+    } catch (err) {
+      console.warn('Backend API offline, saved message to Admin Portal storage');
+    }
+
     setIsSubmitting(false);
     setSubmitted(true);
   };
@@ -94,6 +129,8 @@ const ContactPage = () => {
               <FadeIn key={info.label} delay={i * 0.1}>
                 <a
                   href={info.href}
+                  target={info.target}
+                  rel={info.target ? 'noopener noreferrer' : undefined}
                   className="group block p-6 glass rounded-2xl hover:border-primary/20 transition-all duration-500 hover:shadow-gold text-center h-full"
                 >
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
@@ -208,17 +245,52 @@ const ContactPage = () => {
 
             {/* Sidebar */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Map placeholder */}
+              {/* Interactive Navigation Map */}
               <FadeIn delay={0.2}>
-                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-card border border-glass-border">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-card flex items-center justify-center">
-                    <div className="text-center">
-                      <FiMapPin className="text-primary mx-auto mb-2" size={32} />
-                      <p className="text-text text-sm font-luxury">Bobby Studio</p>
-                      <p className="text-muted text-xs mt-1">42 Premium Avenue, Creative City</p>
+                {(() => {
+                  const saved = localStorage.getItem('bobby_studio_cms_contact');
+                  const cmsContact = saved ? JSON.parse(saved) : null;
+                  const mapTitle = cmsContact?.mapTitle || 'Studio Location Map';
+                  const mapAddress = cmsContact?.mapAddress || 'YVR Luxury Studio Premises, Hyderabad';
+                  const directionsUrl = cmsContact?.googleMapsUrl || 'https://www.google.com/maps/place/Yvr+Luxury+Boys+PG/@17.3459465,78.3224294,17z';
+                  const iframeSrc = cmsContact?.embedIframeUrl || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.498424076383!2d78.3224294!3d17.3459465!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb950009070931%3A0x2223242406072e9d!2sYvr%20Luxury%20Boys%20PG!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin';
+
+                  return (
+                    <div className="glass rounded-2xl p-4 border border-glass-border overflow-hidden space-y-3">
+                      <div className="flex items-center justify-between px-1">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                            <FiMapPin className="text-primary" size={16} />
+                          </div>
+                          <div>
+                            <h3 className="text-sm font-luxury font-bold text-text">{mapTitle}</h3>
+                            <p className="text-[11px] text-muted">{mapAddress}</p>
+                          </div>
+                        </div>
+                        <a
+                          href={directionsUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3 py-1.5 bg-primary text-black text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-white transition-colors"
+                        >
+                          Directions ↗
+                        </a>
+                      </div>
+
+                      {/* Google Maps Iframe */}
+                      <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-glass-border shadow-inner bg-card">
+                        <iframe
+                          title="Bobby Studio Location Map"
+                          src={iframeSrc}
+                          className="w-full h-full border-0 transition-all duration-500"
+                          allowFullScreen
+                          loading="lazy"
+                          referrerPolicy="no-referrer-when-downgrade"
+                        />
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  );
+                })()}
               </FadeIn>
 
               {/* WhatsApp CTA */}

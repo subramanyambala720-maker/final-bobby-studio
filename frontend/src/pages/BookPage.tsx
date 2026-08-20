@@ -148,15 +148,24 @@ const LuxuryServiceSelect = ({
 
 const BookPage = () => {
   const location = useLocation();
-  const [selectedService, setSelectedService] = useState<string>(
-    (location.state as any)?.selectedServiceId || ''
-  );
-  const [selectedTime, setSelectedTime] = useState('');
-  const [currentStep, setCurrentStep] = useState(1);
+  const locationState = location.state as any;
+  const initialServiceId = locationState?.selectedServiceId || locationState?.selectedService || '';
+
+  const [selectedService, setSelectedService] = useState<string>(() => {
+    if (initialServiceId) {
+      const match = serviceOptions.find(
+        (s) => s.id === initialServiceId || s.label.toLowerCase().includes(initialServiceId.toString().toLowerCase())
+      );
+      return match ? match.id : 'wedding';
+    }
+    return 'wedding';
+  });
+
+  const [selectedTime, setSelectedTime] = useState('10:00 AM');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isBooked, setIsBooked] = useState(false);
   const [formData, setFormData] = useState({
-    name: '', email: '', phone: '', date: '', location: '', message: '',
+    name: '', email: '', phone: '', date: new Date().toISOString().split('T')[0], location: '', message: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -167,7 +176,56 @@ const BookPage = () => {
     e.preventDefault();
     if (!selectedService) return;
     setIsSubmitting(true);
-    await new Promise((r) => setTimeout(r, 2000));
+
+    const activeOption = serviceOptions.find((s) => s.id === selectedService);
+    const newBookingId = `BS-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    const newBookingItem = {
+      id: newBookingId,
+      customerName: formData.name || 'Valued Client',
+      email: formData.email || 'client@example.com',
+      phone: formData.phone || '+91 9949216881',
+      service: activeOption?.label || 'Wedding Photography',
+      eventDate: formData.date || new Date().toISOString().split('T')[0],
+      timeSlot: selectedTime || '10:00 AM',
+      packageChoice: activeOption?.label || 'Custom Session',
+      estimatedPrice: activeOption?.price ? Number(activeOption.price.replace(/[^0-9]/g, '')) : 25000,
+      status: 'pending' as const,
+      paymentStatus: 'unpaid' as const,
+      assignedPhotographer: 'Unassigned',
+      notes: formData.message || 'Booked via website session selector',
+    };
+
+    // Save to local storage for Admin Portal sync
+    try {
+      const existing = localStorage.getItem('bobby_studio_admin_bookings');
+      const list = existing ? JSON.parse(existing) : [];
+      localStorage.setItem('bobby_studio_admin_bookings', JSON.stringify([newBookingItem, ...list]));
+    } catch (err) {
+      console.error(err);
+    }
+
+    // POST to backend API
+    try {
+      await fetch('http://localhost:5000/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerName: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          service: activeOption?.label,
+          eventDate: formData.date,
+          timeSlot: selectedTime,
+          packageChoice: activeOption?.label,
+          estimatedPrice: newBookingItem.estimatedPrice,
+          specialNotes: formData.message,
+        }),
+      });
+    } catch (error) {
+      console.warn('Backend offline, saved booking to Admin Portal local sync');
+    }
+
     setIsSubmitting(false);
     setIsBooked(true);
   };
