@@ -91,17 +91,19 @@ app.use((err: any, _req: express.Request, res: express.Response, _next: express.
 const startServer = async () => {
   try {
     await connectDB();
-    app.listen(PORT, () => {
-      console.log(`\n✨ Bobby Studio API running on http://localhost:${PORT}`);
-      console.log(`📦 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`🏥 Health check: http://localhost:${PORT}/api/health\n`);
-    });
+    if (!process.env.VERCEL) {
+      app.listen(PORT, () => {
+        console.log(`\n✨ Bobby Studio API running on http://localhost:${PORT}`);
+        console.log(`📦 Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`🏥 Health check: http://localhost:${PORT}/api/health\n`);
+      });
+    }
   } catch (error) {
     console.error('Failed to start server:', error);
-    process.exit(1);
   }
 };
 
 startServer();
 
 export default app;
+
